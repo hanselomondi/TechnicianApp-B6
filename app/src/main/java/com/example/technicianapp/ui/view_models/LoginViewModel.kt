@@ -3,8 +3,6 @@ package com.example.technicianapp.ui.view_models
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.technicianapp.firebase_functions.authenticateUser
-import com.example.technicianapp.firebase_functions.createUser
-import com.example.technicianapp.results.AuthResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +15,7 @@ class LoginViewModel : ViewModel() {
     private val _password = MutableStateFlow("")
     val password: StateFlow<String> = _password
 
-    private val _authResult = MutableStateFlow<AuthResult>(AuthResult.Failure(""))
+    private val _authResult = MutableStateFlow<Result<String>>(Result.failure(Exception("")))
     val authResult = _authResult.asStateFlow()
 
     fun onEmailChange(newEmail: String) {

@@ -11,7 +11,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.technicianapp.results.AuthResult
 import com.example.technicianapp.ui.view_models.SignUpViewModel
 import kotlinx.coroutines.launch
 

@@ -1,5 +1,6 @@
 package com.example.technicianapp.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,11 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.technicianapp.results.AuthResult
 import com.example.technicianapp.ui.view_models.LoginViewModel
 
 @Composable
@@ -27,11 +28,11 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
     val password by loginViewModel.password.collectAsState()
     val authResult by loginViewModel.authResult.collectAsState()
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .background(Color.Gray),
         verticalArrangement = Arrangement.Center
     ) {
         TextField(
@@ -58,13 +59,12 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
             Text("Login")
         }
 
-        when (authResult) {
-            is AuthResult.Success -> {
-                Text("Login successful:${(authResult as AuthResult.Success).uid}")
+        authResult.onSuccess {
+            Text("Login successful:${it}")
 
-                navController.navigate("Home")
-            }
-            is AuthResult.Failure -> Text("Error: ${(authResult as AuthResult.Failure).errorMessage}")
+            navController.navigate("Home")
+        }.onFailure {
+            Text("Error: $it")
         }
     }
 }

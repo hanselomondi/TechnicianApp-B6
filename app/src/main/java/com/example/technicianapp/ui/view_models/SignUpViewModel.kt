@@ -1,16 +1,11 @@
 package com.example.technicianapp.ui.view_models
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.technicianapp.firebase_functions.authenticateUser
 import com.example.technicianapp.firebase_functions.createUser
 import com.example.technicianapp.firebase_functions.saveUserProfileToFirestore
 import com.example.technicianapp.models.User
-import com.example.technicianapp.results.AuthResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class SignUpViewModel() : ViewModel() {
     private val _firstName = MutableStateFlow("")
@@ -58,33 +53,6 @@ class SignUpViewModel() : ViewModel() {
     fun onConfirmPasswordChange(newConfirmPassword: String) {
         _confirmPassword.value = newConfirmPassword
     }
-
-    /*fun signUp(): Result<String> {
-        var fin: Result<String> = Result.failure(Exception("Error"))
-
-        viewModelScope.launch {
-            val result = createUser(_email.value, _password.value)
-
-            result.onSuccess { uid ->
-                saveUserProfileToFirestore(
-                    uid = uid,
-                    user = User(
-                        _firstName.value,
-                        _lastName.value,
-                        _phone.value,
-                        _email.value
-                    )
-                ).onSuccess {
-                    fin = Result.success("Success document")
-                }
-
-            }
-
-
-        }
-
-        return fin
-    }*/
 
     suspend fun signUp() {
         try {
