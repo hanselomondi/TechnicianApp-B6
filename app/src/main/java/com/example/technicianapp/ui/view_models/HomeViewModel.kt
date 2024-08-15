@@ -10,18 +10,21 @@ import kotlinx.coroutines.launch
 // TODO probably take outFirebase logic from View Model
 
 class HomeViewModel : ViewModel() {
-    private val _signedOut = MutableStateFlow(false)
+    private val _signedOut = MutableStateFlow<Result<String>>(Result.failure(Exception("")))
     val signedOut = _signedOut.asStateFlow()
-
-    fun logout() {
-        viewModelScope.launch {
-            FirebaseAuth.getInstance().signOut()
-
-            _signedOut.value = true
-        }
-    }
 
     fun getAccountDetails(): String {
         return FirebaseAuth.getInstance().currentUser?.email ?: "No email"
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            try {
+                FirebaseAuth.getInstance().signOut()
+                _signedOut.value = Result.success("Successfully signed out")
+            } catch (e: Exception) {
+                _signedOut.value = Result.failure(e)
+            }
+        }
     }
 }

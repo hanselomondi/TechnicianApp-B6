@@ -70,30 +70,21 @@ suspend fun fetchServices(): Result<Map<String, List<String>>> {
 }
 
 
-// TODO can use     FirebaseAuth.getInstance().currentUser?.uid  for the uid
-suspend fun addSkillsToTechnicianFirestore(selectedSkills: Map<String, List<String>>): Result<String> {
+suspend fun addServicesToTechnicianFirestore(selectedSkills: Map<String, List<String>>): Result<String> {
 
     return try {
         val db = FirebaseFirestore.getInstance()
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: "Control_T1"
         val docRef = db.collection("Technicians").document(uid)
 
-        // Transform the Map into a list of Map<String, List<String>> format
-        /*
-                val servicesOffered = selectedSkills.map { (category, services) ->
-                    mapOf(category to services)
-                }
-        */
-
-
         docRef.set(mapOf("Services_Offered" to selectedSkills), SetOptions.merge())
             .await()
 
-        Log.d("Firestore", "addSkillsToTechnicianFirestore: Skills successfully saved to Firestore for user $uid")
+        Log.d("Firestore", "addServicesToTechnicianFirestore: Skills successfully saved to Firestore for user $uid")
 
-        Result.success("Skills successfully saved to Firestore for user $uid")
+        Result.success("Services successfully saved to Firestore for user $uid")
     } catch (e: Exception) {
-        Log.e("Firestore", "addSkillsToTechnicianFirestore: Error saving skills to Firestore", e)
+        Log.e("Firestore", "addServicesToTechnicianFirestore: Error saving Services to Firestore", e)
 
         Result.failure(e)
     }

@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.technicianapp.NavDestinations
 import com.example.technicianapp.ui.view_models.HomeViewModel
 import kotlin.math.sign
 
@@ -32,7 +33,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
 
         Button(
             onClick = {
-                navController.navigate("Services")
+                navController.navigate(NavDestinations.SERVICES_SELECTION.name)
             }
         ) {
             Text("Add Services")
@@ -47,16 +48,12 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
         }
     }
 
-
-    when (signedOut){
-        true -> {
-            navController.navigate("login") {
-                popUpTo("login") { inclusive = true }
-            }
+    signedOut.onSuccess {
+        navController.navigate(NavDestinations.LOGIN.name) {
+            // Clear the back stack to only have LOGIN as the top destination
+            popUpTo(NavDestinations.LOGIN.name) { inclusive = true }
+            launchSingleTop = true
         }
+    }.onFailure { }
 
-        false -> {
-            // TODO
-        }
-    }
 }

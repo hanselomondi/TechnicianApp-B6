@@ -3,22 +3,22 @@ package com.example.technicianapp.ui.view_models
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.technicianapp.firebase_functions.addSkillsToTechnicianFirestore
+import com.example.technicianapp.firebase_functions.addServicesToTechnicianFirestore
 import com.example.technicianapp.firebase_functions.fetchServices
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class SkillsViewModel : ViewModel() {
+class ServicesViewModel : ViewModel() {
     private val _services = MutableStateFlow<Map<String, List<String>>>(emptyMap())
     val services = _services.asStateFlow()
 
     // Keeps track of selected skills by category
-    private val _selectedSkills = MutableStateFlow<Map<String, List<String>>>(emptyMap())
-    val selectedSkills = _selectedSkills.asStateFlow()
+    private val _selectedServices = MutableStateFlow<Map<String, List<String>>>(emptyMap())
+    val selectedServices = _selectedServices.asStateFlow()
 
-    private val _addSkillsResult = MutableStateFlow<Result<String>>(Result.failure(Exception("")))
-    val addSkillsResult = _addSkillsResult.asStateFlow()
+    private val _addServicesResult = MutableStateFlow<Result<String>>(Result.failure(Exception("")))
+    val addServicesResult = _addServicesResult.asStateFlow()
 
     init {
         loadServices()
@@ -37,25 +37,25 @@ class SkillsViewModel : ViewModel() {
         }
     }
 
-    fun updateSelectedSkills(category: String, service: String, isChecked: Boolean) {
-        val currentSkills = _selectedSkills.value.toMutableMap()
+    fun updateSelectedServices(category: String, service: String, isChecked: Boolean) {
+        val currentServices = _selectedServices.value.toMutableMap()
         // MutableList containing the Services
-        val updatedSkills = currentSkills.getOrDefault(category, emptyList()).toMutableList()
+        val updatedServices = currentServices.getOrDefault(category, emptyList()).toMutableList()
 
         // if it is checked and the list doesn't yet contain the service:
-        if (isChecked and (updatedSkills.contains(service).not())) {
+        if (isChecked and (updatedServices.contains(service).not())) {
             // if the list doesn't yet contain the service
-            updatedSkills.add(service)
+            updatedServices.add(service)
 
-            Log.d("SkillsViewModel", "Service $service checked")
+            Log.d("ServicesViewModel", "Service $service checked")
         } else { // if it is unchecked:
-            updatedSkills.remove(service)
+            updatedServices.remove(service)
 
-            Log.d("SkillsViewModel", "Service $service removed")
+            Log.d("ServicesViewModel", "Service $service removed")
         }
 
-        currentSkills[category] = updatedSkills
-        _selectedSkills.value = currentSkills
+        currentServices[category] = updatedServices
+        _selectedServices.value = currentServices
     }
 
     /*fun getSelectedSkills(): Map<String, List<String>> {
@@ -64,9 +64,9 @@ class SkillsViewModel : ViewModel() {
 
     fun saveSelectedSkills() {
         viewModelScope.launch {
-            _addSkillsResult.value = addSkillsToTechnicianFirestore(_selectedSkills.value)
+            _addServicesResult.value = addServicesToTechnicianFirestore(_selectedServices.value)
 
-            Log.d("SkillsViewModel", _addSkillsResult.value.toString())
+            Log.d("ServicesViewModel", _addServicesResult.value.toString())
         }
     }
 }

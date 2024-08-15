@@ -10,7 +10,8 @@ activityCompose = "1.9.1"
 composeBom = "2024.06.00" # prev "2024.04.01"
 firebaseBom = "33.1.2"
 navigationCompose = "2.7.7"
-googleServices = "4.4.2"
+androidx-compose-material3 = "1.2.1"
+material-icons-extended = "1.6.8"
 
 
 [libraries]
@@ -27,7 +28,9 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+# androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidx-compose-material3" }
+androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "material-icons-extended" }
 
 
 # Firebase

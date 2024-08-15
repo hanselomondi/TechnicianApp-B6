@@ -1,6 +1,5 @@
 package com.example.technicianapp.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,23 +20,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.technicianapp.ui.view_models.SkillsViewModel
+import com.example.technicianapp.ui.view_models.ServicesViewModel
 
 @Composable
-fun SkillsSelectionScreen(
+fun ServicesSelectionScreen(
     navController: NavController,
-    viewModel: SkillsViewModel = viewModel(),
+    viewModel: ServicesViewModel = viewModel(),
 ) {
     val services by viewModel.services.collectAsState()
     val expandedCategory = remember { mutableStateOf<String?>(null) }
-    val selectedSkills by viewModel.selectedSkills.collectAsState()
-    val skillsAdded by viewModel.addSkillsResult.collectAsState()
+    val selectedServices by viewModel.selectedServices.collectAsState()
+    val servicesAdded by viewModel.addServicesResult.collectAsState()
 
     LazyColumn {
         services.forEach { (category, servicesList) ->
@@ -65,9 +63,9 @@ fun SkillsSelectionScreen(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Checkbox(
-                                        checked = selectedSkills[category]?.contains(service) == true,
+                                        checked = selectedServices[category]?.contains(service) == true,
                                         onCheckedChange = { checked ->
-                                            viewModel.updateSelectedSkills(
+                                            viewModel.updateSelectedServices(
                                                 category,
                                                 service,
                                                 checked
@@ -99,7 +97,7 @@ fun SkillsSelectionScreen(
         }
     }
 
-    skillsAdded.onSuccess {
+    servicesAdded.onSuccess {
         Text("Skills added successfully. $it")
 
         navController.navigate("home")
