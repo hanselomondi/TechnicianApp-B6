@@ -23,10 +23,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -34,9 +34,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.technicianapp.NavDestinations
+import com.example.technicianapp.firebase_functions.getClientsChatList
+import com.example.technicianapp.firebase_functions.techCreateOrSendMessage
 import com.example.technicianapp.ui.view_models.LoginViewModel
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
@@ -44,6 +46,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
     val password by viewModel.password.collectAsState()
     val authResult by viewModel.authResult.collectAsState()
     var passwordVisible by remember { mutableStateOf(false) }
+
 
     Column(
         modifier = Modifier
@@ -92,7 +95,14 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
             Text("Login")
         }
 
-        Text(FirebaseAuth.getInstance().currentUser?.uid ?: "none")
+        //Text(FirebaseAuth.getInstance().currentUser?.uid ?: "none")
+
+
+
+
+
+
+
 
         authResult.onSuccess {
             Text("Login successful:${it}")
@@ -105,7 +115,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                 launchSingleTop = true
             }
         }.onFailure {
-            Text("Error: $it")
+            //Text("Error: $it")
         }
     }
 }

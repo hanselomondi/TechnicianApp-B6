@@ -7,10 +7,10 @@ data class Technician (
     val email: String,
     val profilePicture: String,
     val bio: String,
-    val rating: String,
+    val rating: Float, // maybe do away with
     // val userDetails: Map<String, String>, // fnm, lnm, phn, eml, pfp, bio, rtng
     val skills: Map<String, List<String>>,
-    val availabilityStatus: Boolean,
+    val availabilityStatus: Boolean, // while at work, maybe add a "working/busy" status
     val workingHours: Map<String, String>,
     val appointments: List<String>
 )

@@ -2,8 +2,8 @@ package com.example.technicianapp.ui.view_models
 
 import androidx.lifecycle.ViewModel
 import com.example.technicianapp.firebase_functions.createUser
-import com.example.technicianapp.firebase_functions.saveUserProfileToFirestore
-import com.example.technicianapp.models.User
+import com.example.technicianapp.firebase_functions.saveTechnicianToFirestore
+import com.example.technicianapp.models.Technician
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -26,7 +26,7 @@ class SignUpViewModel() : ViewModel() {
     private val _confirmPassword = MutableStateFlow("")
     val confirmPassword = _confirmPassword.asStateFlow()
 
-    private val _authResult = MutableStateFlow<Result<String>>(Result.failure(Exception("")))
+    private val _authResult = MutableStateFlow<Result<Unit>>(Result.failure(Exception("")))
     val authResult = _authResult.asStateFlow()
 
 
@@ -59,17 +59,24 @@ class SignUpViewModel() : ViewModel() {
             val authResult = createUser(_email.value, _password.value)
 
             authResult.onSuccess { uid ->
-                val profileResult = saveUserProfileToFirestore(
+                val profileResult = saveTechnicianToFirestore(
                     uid = uid,
-                    user = User(
-                        _firstName.value,
-                        _lastName.value,
-                        _phone.value,
-                        _email.value
+                    tech = Technician(
+                        firstName = _firstName.value,
+                        lastName = _lastName.value,
+                        phone = _phone.value,
+                        email = _email.value,
+                        profilePicture = "",
+                        bio = "",
+                        rating = 0f,
+                        skills = mapOf(),
+                        availabilityStatus = false,
+                        workingHours = mapOf(),
+                        appointments = listOf()
                     )
                 )
 
-                _authResult.value = profileResult.map { "Success document" }
+                _authResult.value = profileResult
             }
         } catch (e: Exception) {
             _authResult.value = Result.failure(e)

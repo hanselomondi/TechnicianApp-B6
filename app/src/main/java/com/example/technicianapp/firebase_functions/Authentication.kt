@@ -1,5 +1,6 @@
 package com.example.technicianapp.firebase_functions
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.Dispatchers
@@ -16,8 +17,12 @@ suspend fun authenticateUser(email: String, password: String): Result<String> {
 
         // Check if the sign-in was successful
         if (signInResult?.user != null) {
+            Log.d("Authentication", "User signed in with UID: ${signInResult.user!!.uid}")
+
             Result.success(signInResult.user!!.uid)
         } else {
+            Log.e("Authentication", "Authentication failed. Please try again.")
+
             Result.failure(Exception("Authentication failed. Please try again."))
         }
     } catch (e: Exception) {
@@ -26,6 +31,7 @@ suspend fun authenticateUser(email: String, password: String): Result<String> {
     }
 }
 
+// create a user with email & password and return the uid on success
 suspend fun createUser(email: String, password: String): Result<String> {
     val auth = FirebaseAuth.getInstance()
 
