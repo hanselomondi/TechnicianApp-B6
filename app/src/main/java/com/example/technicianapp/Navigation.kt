@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.technicianapp.ui.screens.ClientChatScreen
+import com.example.technicianapp.ui.screens.EditTechProfileScreen
 import com.example.technicianapp.ui.screens.HomeScreen
 import com.example.technicianapp.ui.screens.LoginScreen
 import com.example.technicianapp.ui.screens.SignUpScreen
@@ -49,10 +50,23 @@ fun AppNavigation() {
     ) {
         composable(NavDestinations.LOGIN.name) { LoginScreen(navController) }
         composable(NavDestinations.SIGN_UP.name) { SignUpScreen(navController) }
-        composable(NavDestinations.HOME.name) { HomeScreen(navController= navController,
-            viewModel = HomeViewModel(),
-            techID = currentUser!!.uid
-        ) }
+        composable(NavDestinations.HOME.name) { //backStackEntry ->
+            //val techID = backStackEntry.arguments?.getString("techID") ?: currentUser!!.uid
+            HomeScreen(
+                navController = navController,
+                viewModel = HomeViewModel(),
+                techID = currentUser!!.uid
+            )
+        }
+        // For first time login
+        composable("${NavDestinations.HOME.name}/{techID}") { backStackEntry ->
+            val techID = backStackEntry.arguments?.getString("techID") ?: currentUser!!.uid
+            HomeScreen(
+                navController = navController,
+                viewModel = HomeViewModel(),
+                techID = techID
+            )
+        }
         composable(NavDestinations.SERVICES_SELECTION.name) { ServicesSelectionScreen(navController) }
         composable(NavDestinations.TECHNICIAN_CHAT_LIST.name) {
             TechnicianChatListScreen(navController = navController, techId = currentUser!!.uid)
@@ -65,6 +79,9 @@ fun AppNavigation() {
                 techID = currentUser!!.uid
             )
         }
+        composable(NavDestinations.EDIT_TECH_PROFILE.name) {
+            EditTechProfileScreen()
+        }
     }
 }
 
@@ -75,4 +92,5 @@ enum class NavDestinations {
     HOME,
     SERVICES_SELECTION,
     TECHNICIAN_CHAT_LIST,
+    EDIT_TECH_PROFILE
 }

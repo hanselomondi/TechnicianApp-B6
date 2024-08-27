@@ -133,6 +133,16 @@ fun HomeScreen(
             Text("See All Chats")
         }
 
+        Spacer(modifier = Modifier.height(25.dp))
+
+        Button(
+            onClick = {
+                navController.navigate(NavDestinations.EDIT_TECH_PROFILE.name)
+            }
+        ) {
+            Text("Edit Profile")
+        }
+
 
 
         Spacer(modifier = Modifier.height(50.dp))

@@ -1,5 +1,6 @@
 package com.example.technicianapp.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,16 +18,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -34,14 +34,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.technicianapp.NavDestinations
-import com.example.technicianapp.firebase_functions.getClientsChatList
-import com.example.technicianapp.firebase_functions.techCreateOrSendMessage
 import com.example.technicianapp.ui.view_models.LoginViewModel
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
+    val context = LocalContext.current
+
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
     val authResult by viewModel.authResult.collectAsState()
@@ -95,7 +93,16 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
             Text("Login")
         }
 
-        //Text(FirebaseAuth.getInstance().currentUser?.uid ?: "none")
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                navController.navigate(NavDestinations.SIGN_UP.name)
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Sign Up")
+        }
 
 
 
@@ -103,19 +110,23 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
 
 
 
+        authResult.onSuccess { techID ->
+            Text("Login successful:${techID}")
 
-        authResult.onSuccess {
-            Text("Login successful:${it}")
-
-            navController.navigate(NavDestinations.HOME.name) {
+            navController.navigate("${NavDestinations.HOME.name}/${techID}") {
                 // Clear the backstack and set Home as the only page
                 popUpTo(navController.graph.startDestinationId) {
                     inclusive = true
                 }
                 launchSingleTop = true
             }
-        }.onFailure {
-            //Text("Error: $it")
+        }.onFailure { failure ->
+            if (failure.message?.isNotBlank() == true)
+                Toast.makeText(
+                    context,
+                    failure.message,
+                    Toast.LENGTH_LONG
+                ).show()
         }
     }
 }

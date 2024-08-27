@@ -2,7 +2,6 @@ package com.example.technicianapp.firebase_functions
 
 import android.util.Log
 import com.example.technicianapp.models.Technician
-import com.example.technicianapp.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -16,14 +15,14 @@ import kotlinx.coroutines.withContext
 suspend fun saveTechnicianToFirestore(
     uid: String,
     tech: Technician
-): Result<Unit> { // TODO change return T
+): Result<String> { // TODO change return T
     val db = FirebaseFirestore.getInstance()
 
     return try {
         // Save the tech profile to Firestore with the document ID set to the Tech's UID
         db.collection("Technicians").document(uid).set(tech).await()
 
-        Result.success(Unit) // Return success if the operation completes without exceptions
+        Result.success("Account created successfully") // Return success if the operation completes without exceptions
     } catch (e: Exception) {
         // Return failure with an error message if an exception occurs
         Result.failure(e)
@@ -31,25 +30,55 @@ suspend fun saveTechnicianToFirestore(
 }
 
 
-suspend fun getUserProfileFromFirestore(uid: String): Result<User> {
+suspend fun getTechProfileFromFirestore(): Result<Technician> {
     val db = FirebaseFirestore.getInstance()
+    val uid = FirebaseAuth.getInstance().currentUser!!.uid
 
     return try {
-        // Get the user profile from Firestore using the User's UID
-        val user =
-            db.collection("Technicians").document(uid).get().await().toObject(User::class.java)
+        // Get the Tech profile from Firestore using the User's UID
+        val tech =
+            db.collection("Technicians").document(uid).get().await()
+                .toObject(Technician::class.java)
 
-        if (user != null) {
-            Result.success(user) // Return success if the operation completes without exceptions
+        if (tech != null) {
+            Log.d("Firestore", "Tech profile fetched successfully.")
+
+            Result.success(tech) // Return success if the operation completes without exceptions
         } else {
-            Result.failure(NullPointerException("User profile is null"))
+            Log.e("Firestore", "Tech profile is null.")
+
+            db.collection("Technicians").document(uid).set(Technician()).await()
+
+            Result.success(Technician()).also {
+                Log.d("Firestore", "Tech profile created successfully.")
+            }
         }
     } catch (e: Exception) {
-        // Return failure with an error message if an exception occurs
+        Log.e("Firestore", "Error fetching Tech profile: $e")
+
         Result.failure(e)
     }
 }
 
+// maybe take a Technician object as a parameter instead?
+suspend fun editTechProfile(fields: Map<String, Any>): Result<String> {
+    val db = FirebaseFirestore.getInstance()
+    val uid = FirebaseAuth.getInstance().currentUser!!.uid
+
+    return try {
+        val docRef = db.collection("Technicians").document(uid)
+        docRef.update(fields).await()
+
+        Result.success("Profile updated successfully").also {
+            Log.d("Firestore", "Profile updated successfully.")
+        }
+    } catch (e: Exception) {
+
+        Result.failure<String>(e).also {
+            Log.e("Firestore", "Error updating profile: $e")
+        }
+    }
+}
 
 suspend fun fetchServices(): Result<Map<String, List<String>>> {
 
@@ -80,7 +109,7 @@ suspend fun fetchServices(): Result<Map<String, List<String>>> {
     }
 }
 
-
+// TODO handle updates
 suspend fun addServicesToTechnicianFirestore(selectedSkills: Map<String, List<String>>): Result<String> {
 
     return try {
@@ -88,7 +117,7 @@ suspend fun addServicesToTechnicianFirestore(selectedSkills: Map<String, List<St
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: "Control_T1"
         val docRef = db.collection("Technicians").document(uid)
 
-        docRef.set(mapOf("Services_Offered" to selectedSkills), SetOptions.merge())
+        docRef.set(mapOf("servicesOffered" to selectedSkills), SetOptions.merge())
             .await()
 
         Log.d(
@@ -212,72 +241,6 @@ suspend fun getClientsChatList(techId: String): Result<List<DocumentSnapshot>> {
         Result.failure(e)
     }
 }
-
-
-// TODO ChatGPT prompt
-/*Now that I have a functiont that gets the client documents from the chat Collection, I need a screen and a view model
-
-The screen, on entering composition calls a view model function which in turn calls the firesore function:
-suspend fun getClientsChatList(techId: String): Result<List<DocumentSnapshot>> {
-    val db = FirebaseFirestore.getInstance()
-
-    val clientsChatCollection = db.collection("Technicians").document(techId).collection("Chats")
-
-    return try {
-        val result = withContext(Dispatchers.IO) {
-            clientsChatCollection.get().await()
-        }
-
-        if (!result.isEmpty) {
-            Log.d("Firestore", "Clients chat list fetched successfully.\n${result.documents}")
-
-            Result.success(result.documents)
-        } else {
-            Log.e("Firestore", "No clients found.")
-
-            Result.failure(Exception("No clients found"))
-        }
-    } catch (e: Exception) {
-        Result.failure(e)
-    }
-}
-
-To get all the chat documents
-
-The screen then only displays a row for each client
-The row shows the client ID which is the document ID and the latest message according to the time field. this is the function that adds a message, so you can know the structure of a message in Firestore
-suspend fun techCreateOrSendMessage(clientId: String, techId: String, message: String) {
-    val db = FirebaseFirestore.getInstance()
-
-    val techDocRef =
-        db.collection("Technicians").document(techId).collection("Chats").document(clientId)
-    val clientDocRef =
-        db.collection("Clients").document(clientId).collection("Chats").document(techId)
-
-    val randomTail = System.currentTimeMillis().toString()
-    val techUniqueKey = "Tech_$randomTail"
-
-    val techMessageData = mapOf(
-        techUniqueKey to mapOf(
-            "message" to message,
-            "time" to Timestamp.now()
-        )
-    )
-
-    try {
-        // Suspend until the set operation is complete for the tech collection
-        techDocRef.set(techMessageData, SetOptions.merge()).await()
-        Log.d("Firestore", "Tech Message added to Tech Collection successfully.")
-
-        // Suspend until the set operation is complete for the client collection
-        clientDocRef.set(techMessageData, SetOptions.merge()).await()
-        Log.d("Firestore", "Tech Message added to Client Collection successfully.")
-    } catch (exception: Exception) {
-        Log.e("Firestore", "Error adding tech message: $exception")
-    }
-}
-
-so the row shows the client ID and the latest message. Kind of like how an*/
 
 
 // TODO only use to add more skills

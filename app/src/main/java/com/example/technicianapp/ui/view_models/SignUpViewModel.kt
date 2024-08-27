@@ -1,11 +1,13 @@
 package com.example.technicianapp.ui.view_models
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.technicianapp.firebase_functions.createUser
 import com.example.technicianapp.firebase_functions.saveTechnicianToFirestore
 import com.example.technicianapp.models.Technician
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class SignUpViewModel() : ViewModel() {
     private val _firstName = MutableStateFlow("")
@@ -26,7 +28,7 @@ class SignUpViewModel() : ViewModel() {
     private val _confirmPassword = MutableStateFlow("")
     val confirmPassword = _confirmPassword.asStateFlow()
 
-    private val _authResult = MutableStateFlow<Result<Unit>>(Result.failure(Exception("")))
+    private val _authResult = MutableStateFlow<Result<String>>(Result.failure(Exception("")))
     val authResult = _authResult.asStateFlow()
 
 
@@ -54,29 +56,31 @@ class SignUpViewModel() : ViewModel() {
         _confirmPassword.value = newConfirmPassword
     }
 
-    suspend fun signUp() {
+    fun signUp() {
         try {
-            val authResult = createUser(_email.value, _password.value)
+            viewModelScope.launch {
+                val authResult = createUser(_email.value, _password.value)
 
-            authResult.onSuccess { uid ->
-                val profileResult = saveTechnicianToFirestore(
-                    uid = uid,
-                    tech = Technician(
-                        firstName = _firstName.value,
-                        lastName = _lastName.value,
-                        phone = _phone.value,
-                        email = _email.value,
-                        profilePicture = "",
-                        bio = "",
-                        rating = 0f,
-                        skills = mapOf(),
-                        availabilityStatus = false,
-                        workingHours = mapOf(),
-                        appointments = listOf()
+                authResult.onSuccess { uid ->
+                    val profileResult = saveTechnicianToFirestore(
+                        uid = uid,
+                        tech = Technician(
+                            firstName = _firstName.value,
+                            lastName = _lastName.value,
+                            phone = _phone.value,
+                            email = _email.value,
+                            profilePicture = "",
+                            bio = "",
+                            rating = 0f,
+                            servicesOffered = mapOf(),
+                            workingHours = mapOf(),
+                        )
                     )
-                )
 
-                _authResult.value = profileResult
+                    _authResult.value = profileResult
+                }.onFailure {
+                    _authResult.value = Result.failure(it)
+                }
             }
         } catch (e: Exception) {
             _authResult.value = Result.failure(e)

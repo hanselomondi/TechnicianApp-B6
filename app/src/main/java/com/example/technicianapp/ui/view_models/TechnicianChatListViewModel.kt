@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.technicianapp.firebase_functions.getClientsChatList
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -13,7 +14,11 @@ class TechnicianChatListViewModel : ViewModel() {
     private val _clientsChatList = MutableStateFlow<List<Pair<String, Map<String, Any>>>>(emptyList())
     val clientsChatList: StateFlow<List<Pair<String, Map<String, Any>>>> = _clientsChatList
 
-    fun fetchClientsChatList(techId: String) {
+    init {
+        fetchClientsChatList(FirebaseAuth.getInstance().currentUser!!.uid)
+    }
+
+    private fun fetchClientsChatList(techId: String) {
         viewModelScope.launch {
             val result = getClientsChatList(techId)
 

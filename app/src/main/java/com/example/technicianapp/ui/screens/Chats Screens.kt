@@ -47,11 +47,6 @@ fun TechnicianChatListScreen(
 ) {
     val clientsChatList by viewModel.clientsChatList.collectAsState()
 
-    // Fetch the chat list when entering composition
-    LaunchedEffect(Unit) {
-        viewModel.fetchClientsChatList(techId)
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -88,6 +83,7 @@ fun ChatRow(
     val time = latestMessageData["time"] as? com.google.firebase.Timestamp
     val formattedTime = time?.toDate()?.toString() ?: ""
 
+    // TODO logic flawed from Firestore even. Fix later
     val displayText = if (message.startsWith("Tech_")) {
         "You: $message"
     } else {
@@ -128,7 +124,6 @@ fun ChatRow(
 }
 
 
-
 @Composable
 fun ClientChatScreen(clientId: String?, navController: NavController, techID: String) {
     val viewModel: ClientChatViewModel = viewModel()
@@ -141,7 +136,8 @@ fun ClientChatScreen(clientId: String?, navController: NavController, techID: St
     }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(top = 50.dp),
         verticalArrangement = Arrangement.SpaceBetween // Push input field to the bottom
     ) {

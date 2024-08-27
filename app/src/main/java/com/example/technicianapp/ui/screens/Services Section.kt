@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.technicianapp.NavDestinations
 import com.example.technicianapp.ui.view_models.ServicesViewModel
 
 @Composable
@@ -100,7 +101,7 @@ fun ServicesSelectionScreen(
     servicesAdded.onSuccess {
         Text("Skills added successfully. $it")
 
-        navController.navigate("home")
+        navController.navigate(NavDestinations.HOME.name)
     }.onFailure {
         Text("Error adding skills: $it")
     }
