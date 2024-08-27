@@ -1,14 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+
+    // For Firebase
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.example.technicianapp"
+    namespace = "com.example.clientapp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.technicianapp"
+        applicationId = "com.example.clientapp"
         minSdk = 27
         targetSdk = 34
         versionCode = 1
@@ -58,7 +61,8 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+    // implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -67,12 +71,13 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    // Material3 library
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
+
     // Firebase
     implementation(platform(libs.firebase.bom))
-    // Authentication
-    implementation(libs.firebase.auth)
-    // Firestore
-    implementation(libs.firebase.firestore)
-    // Storage
-    implementation(libs.firebase.storage)
+    implementation(libs.firebase.auth) // Authentication
+    implementation(libs.firebase.firestore) // Firestore
+    implementation(libs.firebase.storage) // Storage
 }
