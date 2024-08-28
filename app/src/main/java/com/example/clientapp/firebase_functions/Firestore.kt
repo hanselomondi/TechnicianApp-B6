@@ -12,15 +12,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 
-suspend fun saveTechnicianToFirestore(
+suspend fun saveClientToFirestore(
     uid: String,
-    tech: Client
+    client: Client
 ): Result<String> { // TODO change return T
     val db = FirebaseFirestore.getInstance()
 
     return try {
-        // Save the tech profile to Firestore with the document ID set to the Tech's UID
-        db.collection("Technicians").document(uid).set(tech).await()
+        // Save the client profile to Firestore with the document ID set to the Client's UID
+        db.collection("Clients").document(uid).set(client).await()
 
         Result.success("Account created successfully") // Return success if the operation completes without exceptions
     } catch (e: Exception) {
