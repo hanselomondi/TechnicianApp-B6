@@ -1,5 +1,6 @@
 package com.example.clientapp.ui.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -113,7 +114,8 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
         authResult.onSuccess { techID ->
             Text("Login successful:${techID}")
 
-            navController.navigate("${NavDestinations.HOME.name}/${techID}") {
+            // TODO fix for tech too
+            navController.navigate(NavDestinations.HOME.name) {
                 // Clear the backstack and set Home as the only page
                 popUpTo(navController.graph.startDestinationId) {
                     inclusive = true

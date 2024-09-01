@@ -44,9 +44,13 @@ suspend fun createUser(email: String, password: String): Result<String> {
         val uid = createResult.user?.uid
 
         if (uid != null) {
-            Result.success(uid)
+            Result.success(uid).also {
+                Log.d("Authentication", "User created with UID: $uid")
+            }
         } else {
-            Result.failure(Exception("Failed to create user. Please try again."))
+            Result.failure<String>(Exception("Failed to create user. Please try again.")).also {
+                Log.e("Authentication", "Failed to create user. Please try again.")
+            }
         }
     } catch (e: Exception) {
         Result.failure(e)

@@ -17,6 +17,7 @@ class LoginViewModel : ViewModel() {
     private val _authResult = MutableStateFlow<Result<String>>(Result.failure(Exception("")))
     val authResult = _authResult.asStateFlow()
 
+
     fun onEmailChange(newEmail: String) {
         _email.value = newEmail
     }

@@ -8,9 +8,14 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-
+import com.example.clientapp.ui.screens.AssistantScreen
+import com.example.clientapp.ui.screens.ChatListScreen
+import com.example.clientapp.ui.screens.HomeScreen
 import com.example.clientapp.ui.screens.LoginScreen
+
 import com.example.clientapp.ui.screens.SignUpScreen
+import com.example.clientapp.ui.screens.SpecificChatScreen
+import com.example.clientapp.ui.view_models.HomeViewModel
 
 import com.google.firebase.auth.FirebaseAuth
 
@@ -34,49 +39,49 @@ fun AppNavigation() {
             }
 
         }
-
-        /*navController.navigate(NavDestinations.TECHNICIAN_CHAT_LIST.name) {
-            popUpTo(0) { inclusive = true }
-        }*/
     }
 
     NavHost(
         navController,
-        startDestination = if (currentUser != null) NavDestinations.HOME.name else NavDestinations.SIGN_UP.name
+        startDestination = if (currentUser != null) NavDestinations.HOME.name else NavDestinations.LOGIN.name
     ) {
-        composable(NavDestinations.LOGIN.name) { LoginScreen(navController) }
-        composable(NavDestinations.SIGN_UP.name) { SignUpScreen(navController) }
-        /*composable(NavDestinations.HOME.name) { //backStackEntry ->
+        composable(NavDestinations.LOGIN.name) {
+            LoginScreen(navController = navController)
+        }
+        composable(NavDestinations.SIGN_UP.name) {
+            SignUpScreen(navController)
+        }
+        composable(NavDestinations.HOME.name) { //backStackEntry ->
             //val techID = backStackEntry.arguments?.getString("techID") ?: currentUser!!.uid
             HomeScreen(
                 navController = navController,
                 viewModel = HomeViewModel(),
-                techID = currentUser!!.uid
             )
         }
+        composable(NavDestinations.PROMPT_SCREEN.name) {
+            AssistantScreen(navController = navController)
+        }
         // For first time login
-        composable("${NavDestinations.HOME.name}/{techID}") { backStackEntry ->
+        /*composable("${NavDestinations.HOME.name}/{techID}") { backStackEntry ->
             val techID = backStackEntry.arguments?.getString("techID") ?: currentUser!!.uid
             HomeScreen(
                 navController = navController,
                 viewModel = HomeViewModel(),
                 techID = techID
             )
+        }*/
+        composable(NavDestinations.CHAT_LIST.name) {
+            ChatListScreen(navController = navController)
         }
-        composable(NavDestinations.SERVICES_SELECTION.name) { ServicesSelectionScreen(navController) }
-        composable(NavDestinations.TECHNICIAN_CHAT_LIST.name) {
-            TechnicianChatListScreen(navController = navController, techId = currentUser!!.uid)
-        }
-        composable("chat_screen/{clientId}") { backStackEntry ->
-            val clientId = backStackEntry.arguments?.getString("clientId")
-            ClientChatScreen(
-                clientId = clientId,
-                navController = navController,
-                techID = currentUser!!.uid
+        composable(NavDestinations.SPECIFIC_CHAT.name + "/{techID}") { backStackEntry ->
+            val techID = backStackEntry.arguments?.getString("techID")
+            SpecificChatScreen(
+                clientID = currentUser!!.uid,
+                techID = techID
             )
         }
-        composable(NavDestinations.EDIT_TECH_PROFILE.name) {
-            EditTechProfileScreen()
+        /*composable(NavDestinations.EDIT_PROFILE.name) {
+            EditProfileScreen()
         }*/
     }
 }
@@ -86,7 +91,9 @@ enum class NavDestinations {
     LOGIN,
     SIGN_UP,
     HOME,
-    SERVICES_SELECTION,
-    TECHNICIAN_CHAT_LIST,
-    EDIT_TECH_PROFILE
+    CHAT_LIST,
+    SPECIFIC_CHAT,
+    PROMPT_SCREEN,
+    EDIT_PROFILE
 }
+

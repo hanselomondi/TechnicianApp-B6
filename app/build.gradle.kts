@@ -4,6 +4,9 @@ plugins {
 
     // For Firebase
     id("com.google.gms.google-services")
+
+    // Secrets
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -41,7 +44,26 @@ android {
     }
     buildFeatures {
         compose = true
+
+        // added for Secrets
+        buildConfig = true
     }
+
+    secrets {
+        // Optionally specify a different file name containing your secrets.
+        // The plugin defaults to "local.properties"
+        propertiesFileName = "secrets.properties"
+
+        // A properties file containing default secret values. This file can be checked in version control.
+        defaultPropertiesFileName = "local.defaults.properties"
+
+        // Configure which keys should be ignored by the plugin by providing regular expressions.
+        // "sdk.dir" is ignored by default.
+        ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+        ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
+    }
+
+
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
@@ -80,4 +102,8 @@ dependencies {
     implementation(libs.firebase.auth) // Authentication
     implementation(libs.firebase.firestore) // Firestore
     implementation(libs.firebase.storage) // Storage
+
+    // OpenAI
+    implementation (libs.openai.client)
+    implementation(libs.ktor.client.android)
 }

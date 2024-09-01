@@ -3,6 +3,8 @@ package com.example.clientapp.ui.view_models
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clientapp.firebase_functions.createUser
+import com.example.clientapp.firebase_functions.saveClientToFirestore
+import com.example.clientapp.models.Client
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -60,23 +62,17 @@ class SignUpViewModel() : ViewModel() {
                 val authResult = createUser(_email.value, _password.value)
 
                 authResult.onSuccess { uid ->
-                    // TODO change to client
-                    /*val profileResult = saveTechnicianToFirestore(
+                    val profileResult = saveClientToFirestore(
                         uid = uid,
-                        tech = Technician(
+                        client = Client(
                             firstName = _firstName.value,
                             lastName = _lastName.value,
                             phone = _phone.value,
-                            email = _email.value,
-                            profilePicture = "",
-                            bio = "",
-                            rating = 0f,
-                            servicesOffered = mapOf(),
-                            workingHours = mapOf(),
+                            email = _email.value
                         )
                     )
 
-                    _authResult.value = profileResult*/
+                    _authResult.value = profileResult
                 }.onFailure {
                     _authResult.value = Result.failure(it)
                 }

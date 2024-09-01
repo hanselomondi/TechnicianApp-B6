@@ -5,13 +5,16 @@ coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
+ktor_version = "2.3.12"
 lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.9.1"
-composeBom = "2024.06.00" # prev "2024.04.01"
-firebaseBom = "33.1.2"
+composeBom = "2024.08.00" # prev "2024.06.00"
+firebaseBom = "33.2.0" # prev "33.1.2"
 navigationCompose = "2.7.7"
 androidx-compose-material3 = "1.2.1"
 material-icons-extended = "1.6.8"
+openaiClientVersion = "3.8.2"
+secretsGradlePlugin = "2.0.1"
 
 
 [libraries]
@@ -39,6 +42,15 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+
+
+# OpenAI Client BOM
+openai-client = { module = "com.aallam.openai:openai-client", version.ref = "openaiClientVersion" }
+ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor_version" }
+
+# Secrets Plugin
+secrets-gradle-plugin = { module = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
