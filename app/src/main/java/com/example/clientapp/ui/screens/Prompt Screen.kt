@@ -7,8 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.aallam.openai.api.BetaOpenAI
-import com.aallam.openai.api.message.MessageContent
 import com.example.clientapp.ui.view_models.AssistantViewModel
 
 @Composable
@@ -43,6 +41,11 @@ fun AssistantScreen(navController: NavController, viewModel: AssistantViewModel 
                 text = response.toString(),
                 modifier = Modifier.padding(vertical = 4.dp)
             )
+
+
+
+
+
 
         }
     }

@@ -17,7 +17,7 @@ data class Appointment(
     val technicianConfirmed: Boolean = false,
     val status: String = if(clientConfirmed and(technicianConfirmed)) Status.CONFIRMED.displayName else Status.PENDING.displayName,
     val price: Map<String, Any> = hashMapOf(
-        "Currency" to 0,
+        "Currency" to Currency.KENYA.currencyAcronym,
         Price.DAILY.displayName to Price.DAILY.value,
         Price.HOURLY.displayName to Price.HOURLY.value,
         Price.ONE_TIME.displayName to Price.ONE_TIME.value

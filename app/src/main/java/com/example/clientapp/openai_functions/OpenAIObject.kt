@@ -43,11 +43,19 @@ object OpenAIObject : CoroutineScope {
 
 
     private suspend fun initializeAssistantAndThread() {
+        Log.d("OpenAIObject", "Initializing assistant and thread")
+
         if (assistant == null) {
+            Log.d("OpenAIObject", "Retrieving assistant")
             assistant = retrieveAssistant()
+        } else {
+            Log.d("OpenAIObject", "Assistant already retrieved: ${assistant!!.id}")
         }
         if (thread == null) {
+            Log.d("OpenAIObject", "Creating thread")
             thread = createThread()
+        } else {
+            Log.d("OpenAIObject", "Thread already created: ${thread!!.id}")
         }
     }
 
@@ -89,7 +97,6 @@ object OpenAIObject : CoroutineScope {
     }
 
 
-
     suspend fun getResponse(): AssistantResponse {
         do {
             Log.d("OpenAIObject", "in getResponse")
@@ -104,8 +111,8 @@ object OpenAIObject : CoroutineScope {
         val assistantMessages = openAI.messages(thread!!.id)
         Log.d("OpenAIObject", "Response Size: ${assistantMessages.size}")
 
-        // Find the latest message from the Assistant
-        val latestMessage = assistantMessages.lastOrNull { it.role == Role.Assistant }
+        // Find the latest message from the Assistant. Was lastOrNull before.. suddenly works now
+        val latestMessage = assistantMessages.firstOrNull() { it.role == Role.Assistant }
             ?: error("No message from the assistant found")
 
         val textContent =
@@ -131,7 +138,6 @@ object OpenAIObject : CoroutineScope {
             inferredServices = servicesList
         )
     }
-
 
 
     suspend fun prepareAssistant(prompt: String) {
